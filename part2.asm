@@ -17,21 +17,20 @@ main:
     li $t0, 0 # loop invariant
     add $t1, $s2, $zero
     sll $t1, $t1, 2
-    add $a0, $t1, $zero
+    add $a0, $t1, $zero # allocate (4*n) bytes in heap
     li $v0, 9
     syscall
     add $s4, $v0, $zero
     add $t1, $v0, $zero
-    j input_loop
 
 input_loop:
+    # input a[t0] has address t1
     li $v0, 5
     syscall
     sw $v0, 0($t1)
-    addi $t0, $t0, 1
-    addi $t1, $t1, 4
+    addi $t0, $t0, 1 # increment loop invariant
+    addi $t1, $t1, 4 # increment address
     blt $t0, $s2, input_loop # loop if t0 < n
-    j input_x
 
 input_x:
     li $v0, 5
@@ -40,7 +39,23 @@ input_x:
     lw $s1, x # s1 = x
     lw $s3, n # s3 = n (right bound)
     li $s5, 0 # s5 = 0 (left bound)
-    j binary_search
+
+# C code for binary search that was translated to assembly
+#     int l = 0, r = n;
+#     int i;
+#     while (l < r) {
+#         i = (l+r)/2;
+#         if (a[i] == x) {
+#             printf("Yes at index %d\n", i);
+#             return 0;
+#         } else if (a[i] < x) {
+#             l = i+1;
+#         } else {
+#             r = i;
+#         }
+#     }
+#     printf("Not found\n");
+#     return 0;
 
 # s5 = l (left bound), s3 = r (right bound)
 # initially l = 0 and r = n
