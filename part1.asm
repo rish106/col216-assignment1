@@ -2,20 +2,19 @@
 .globl main
 
 main:
-    # Read the input string
+    # allocate 100 bytes on heap for input string
+    li $a0, 101
+    li $v0, 9
+    syscall
+
+    # a0 = base address of string
+    # take 100 character string input starting at address a0
+    add $a0, $v0, $zero
+    li $a1, 101
     li $v0, 8
-    la $a0, buffer
-    li $a1, 100
     syscall
 
-    # Print the saved string
+    # print string starting at base address a0
     li $v0, 4
-    la $a0, buffer
     syscall
-
-    # Exit
-    li $v0, 10
-    syscall
-
-.data
-buffer: .space 100
+    jr $ra
