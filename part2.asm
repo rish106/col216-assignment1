@@ -1,6 +1,5 @@
 .data
 n: .word 0
-array: .space 120
 x: .word 0
 
 msg_success: .asciiz "Found at index "
@@ -16,7 +15,13 @@ main:
     sw $v0, n
     lw $s2, n # s2 = n
     li $t0, 0 # loop invariant
-    la $t1, array # t2 stores address of base of array
+    add $t1, $s2, $zero
+    sll $t1, $t1, 2
+    add $a0, $t1, $zero
+    li $v0, 9
+    syscall
+    add $s4, $v0, $zero
+    add $t1, $v0, $zero
     j input_loop
 
 input_loop:
@@ -35,7 +40,6 @@ input_x:
     lw $s1, x # s1 = x
     lw $s3, n # s3 = n (right bound)
     li $s5, 0 # s5 = 0 (left bound)
-    la $s4, array # s4 = base address of array
     j binary_search
 
 # s5 = l (left bound), s3 = r (right bound)
